@@ -1,22 +1,20 @@
 package File::chmod;
-
-use Carp;
 use strict;
-use vars qw(
-  $VERSION @ISA @EXPORT @EXPORT_OK $DEBUG
-  $UMASK $MASK $VAL $W $MODE
-);
+use warnings;
+use Carp;
+use vars qw( $VAL $W $MODE );
 
-require Exporter;
+use base 'Exporter';
 
-@ISA = qw( Exporter );
-@EXPORT = qw( chmod getchmod );
-@EXPORT_OK = qw( symchmod lschmod getsymchmod getlschmod getmod );
+our $VERSION = '0.33'; # VERSION
 
-$VERSION = '0.32';
-$DEBUG = 1;
-$UMASK = 1;
-$MASK = umask;
+our @EXPORT    = (qw( chmod getchmod ));
+our @EXPORT_OK = (qw( symchmod lschmod getsymchmod getlschmod getmod ));
+
+our $DEBUG     = 1;
+our $UMASK     = 2;
+our $MASK      = umask;
+
 
 my ($SYM,$LS) = (1,2);
 my %ERROR = (
@@ -31,7 +29,6 @@ my %ERROR = (
   ENULSBG => "sticky bit has no effect for 'group'",
   ENULSBO => "sticky bit has no effect for 'others'",
 );
-
 
 sub getmod {
   my @return = map { (stat)[2] & 07777 } @_;
@@ -61,6 +58,14 @@ sub getchmod {
 
 sub symchmod {
   my $mode = shift;
+
+#  warnings::warnif 'deprecated', '$UMASK being true is deprecated'
+#    . ' it will be false by default in the future. This change'
+#    . ' is being made because this not the behavior of the unix command'
+#    . ' `chmod`. This warning can be disabled by putting explicitly'
+#    . ' setting $File::chmod::UMASK to false or any non 2 true value'
+#    if $UMASK == 2;
+
   my @return = getsymchmod($mode,@_);
   my $ret = 0;
   for (@_){ $ret++ if CORE::chmod(shift(@return),$_) }
@@ -119,6 +124,7 @@ sub getsymchmod {
 
 sub lschmod {
   my $mode = shift;
+
   return CORE::chmod(getlschmod($mode,@_),@_);
 }
 
@@ -176,7 +182,7 @@ sub clear {
   $W & 2 and $VAL &= 05707;
   $W & 4 and $VAL &= 07770;
 }
-  
+
 
 sub u_or {
   my $val = $VAL;
@@ -310,8 +316,11 @@ sub t_not {
 
 
 1;
+# ABSTRACT: Implements symbolic and ls chmod modes
 
 __END__
+
+=pod
 
 =head1 NAME
 
@@ -319,11 +328,17 @@ File::chmod - Implements symbolic and ls chmod modes
 
 =head1 VERSION
 
-This is File::chmod v0.32.
+version 0.33
 
 =head1 SYNOPSIS
 
   use File::chmod;
+  # It is recommended that you explicitly set $UMASK as the default may change
+  # in the future, 0 is recommended to behave like system chmod, set to 1 if
+  # you want it enabled, so that if later we decide to disable it by default
+  # it won't change your code. $UMASK has been changed to be true by using
+  # numeric value 2 internally
+  $File::chmod::UMASK = 0;
 
   # chmod takes all three types
   # these all do the same thing
@@ -350,10 +365,15 @@ an "ls" mode (see below).  If you wish not to overload chmod(), you can
 export symchmod() and lschmod(), which take, respectively, a symbolic
 mode and an "ls" mode.
 
+An added feature to version 0.30 is the C<$UMASK> variable, explained in
+detail below; if C<symchmod()> is called and this variable is true, then the
+function uses the (also new) C<$MASK> variable (which defaults to C<umask()>)
+as a mask against the new mode. This mode is one by default, and changes the
+behavior from what you would expect if you are used to UNIX C<chmod>.
+B<This may change in the future.>
+
 Symbolic modes are thoroughly described in your chmod(1) man page, but
 here are a few examples.
-
-  # NEW: if $UMASK is true, symchmod() applies a bit-mask found in $MASK
 
   chmod("+x","file1","file2");	# overloaded chmod(), that is...
   # turns on the execute bit for all users on those two files
@@ -381,11 +401,6 @@ regardless of what it had been before.  symchmod() is useful for allowing
 the modifying of a file's permissions without having to run a system call
 or determining the file's permissions, and then combining that with whatever
 bits are appropriate.  It also operates separately on each file.
-
-An added feature to version 0.30 is the $UMASK variable, explained below; if
-symchmod() is called and this variable is true, then the function uses the
-(also new) $MASK variable (which defaults to umask()) as a mask against the
-new mode.  This is documented below more clearly.
 
 =head2 Functions
 
@@ -462,6 +477,8 @@ This is a boolean which tells getsymchmod() whether or not to apply the umask
 found in $MASK.  It defaults to true.
 
 =back
+
+=for test_synopsis my ( @files );
 
 =head1 REVISIONS
 
@@ -625,10 +642,6 @@ Only good for changing "owner" and "other" read-write access.
 
 =back
 
-=head1 AUTHOR
-
-Jeff C<japhy> Pinyan, F<japhy.734+CPAN@gmail.com>, CPAN ID: PINYAN
-
 =head1 SEE ALSO
 
   Stat::lsMode (by Mark-James Dominus, CPAN ID: MJD)
@@ -636,12 +649,47 @@ Jeff C<japhy> Pinyan, F<japhy.734+CPAN@gmail.com>, CPAN ID: PINYAN
   perldoc -f chmod
   perldoc -f stat
 
-=head1 COPYRIGHT AND LICENCE
+=for Pod::Coverage clear
+determine_mode
+g_not
+g_or
+l_not
+l_or
+mode
+o_not
+o_or
+r_not
+r_or
+s_not
+s_or
+t_not
+t_or
+u_not
+u_or
+w_not
+w_or
+x_not
+x_or
 
-Copyright (C) 2007 by Jeff Pinyan
+=head1 AUTHORS
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.8 or,
-at your option, any later version of Perl 5 you may have available.
+=over 4
+
+=item *
+
+Jeff Pinyan <japhy.734+CPAN@gmail.com>
+
+=item *
+
+Caleb Cushing <xenoterracide@gmail.com>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Caleb Cushing and Jeff Pinyan.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
