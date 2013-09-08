@@ -59,7 +59,7 @@
    "provides" : {
       "File::chmod" : {
          "file" : "lib/File/chmod.pm",
-         "version" : "0.33"
+         "version" : "0.34"
       }
    },
    "release_status" : "stable",
@@ -74,6 +74,6 @@
          "web" : "https://github.com/xenoterracide/file-chmod"
       }
    },
-   "version" : "0.33"
+   "version" : "0.34"
 }
 
