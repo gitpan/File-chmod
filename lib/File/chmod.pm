@@ -6,7 +6,7 @@ use vars qw( $VAL $W $MODE );
 
 use base 'Exporter';
 
-our $VERSION = '0.37'; # VERSION
+our $VERSION = '0.38'; # VERSION
 
 our @EXPORT    = (qw( chmod getchmod )); ## no critic ( ProhibitAutomaticExportation )
 our @EXPORT_OK = (qw( symchmod lschmod getsymchmod getlschmod getmod ));
@@ -328,7 +328,7 @@ File::chmod - Implements symbolic and ls chmod modes
 
 =head1 VERSION
 
-version 0.37
+version 0.38
 
 =head1 SYNOPSIS
 
@@ -539,6 +539,10 @@ feature.
 =item *
 
 David Steinbrunner <dsteinbrunner@pobox.com>
+
+=item *
+
+Slaven Rezic <slaven@rezic.de>
 
 =item *
 

@@ -30,6 +30,9 @@ and
 David
 Steinbrunner
 dsteinbrunner
+Slaven
+Rezic
+slaven
 Tim
 oylenshpeegul
 lib
