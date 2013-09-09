@@ -10,8 +10,10 @@ perlcritic.rc
 t/00-compile.t
 t/000-report-versions-tiny.t
 t/author-critic.t
+t/author-pod-spell.t
 t/author-test-eol.t
-t/basic.t
+t/executable.t
+t/read.t
 t/release-cpan-changes.t
 t/release-dist-manifest.t
 t/release-distmeta.t
@@ -25,3 +27,4 @@ t/release-portability.t
 t/release-synopsis.t
 t/release-test-version.t
 t/release-unused-vars.t
+t/write.t

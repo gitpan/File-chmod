@@ -6,9 +6,9 @@ use vars qw( $VAL $W $MODE );
 
 use base 'Exporter';
 
-our $VERSION = '0.34'; # VERSION
+our $VERSION = '0.35'; # VERSION
 
-our @EXPORT    = (qw( chmod getchmod ));
+our @EXPORT    = (qw( chmod getchmod )); ## no critic ( ProhibitAutomaticExportation )
 our @EXPORT_OK = (qw( symchmod lschmod getsymchmod getlschmod getmod ));
 
 our $DEBUG     = 1;
@@ -36,7 +36,7 @@ sub getmod {
 }
 
 
-sub chmod {
+sub chmod { ## no critic ( Subroutines::ProhibitBuiltinHomonyms )
   my $mode = shift;
   my $how = mode($mode);
 
@@ -172,7 +172,7 @@ sub mode {
 
 
 sub determine_mode {
-  warn $ERROR{EDECMOD};
+  carp $ERROR{EDECMOD};
   mode(@_);
 }
 
@@ -258,7 +258,7 @@ sub w_not {
 
 
 sub x_or {
-  if ($VAL & 02000){ $DEBUG and warn($ERROR{ENEXLOC}), return }
+  if ($VAL & 02000){ $DEBUG and carp($ERROR{ENEXLOC}), return }
   $W & 1 and $VAL |= 0100;
   $W & 2 and $VAL |= 0010;
   $W & 4 and $VAL |= 0001;
@@ -273,25 +273,25 @@ sub x_not {
 
 
 sub s_or {
-  if ($VAL & 02000){ $DEBUG and warn($ERROR{ENSGLOC}), return }
-  if (not $VAL & 00100){ $DEBUG and warn($ERROR{ENEXUID}), return }
-  if (not $VAL & 00010){ $DEBUG and warn($ERROR{ENEXGID}), return }
+  if ($VAL & 02000){ $DEBUG and carp($ERROR{ENSGLOC}), return }
+  if (not $VAL & 00100){ $DEBUG and carp($ERROR{ENEXUID}), return }
+  if (not $VAL & 00010){ $DEBUG and carp($ERROR{ENEXGID}), return }
   $W & 1 and $VAL |= 04000;
   $W & 2 and $VAL |= 02000;
-  $W & 4 and $DEBUG and warn $ERROR{ENULSID};
+  $W & 4 and $DEBUG and carp $ERROR{ENULSID};
 }
 
 
 sub s_not {
   $W & 1 and $VAL &= ~04000;
   $W & 2 and $VAL &= ~02000;
-  $W & 4 and $DEBUG and warn $ERROR{ENULSID};
+  $W & 4 and $DEBUG and carp $ERROR{ENULSID};
 }
 
 
 sub l_or {
-  if ($VAL & 02010){ $DEBUG and warn($ERROR{ENLOCSG}), return }
-  if ($VAL & 00010){ $DEBUG and warn($ERROR{ENLOCEX}), return }
+  if ($VAL & 02010){ $DEBUG and carp ($ERROR{ENLOCSG}), return }
+  if ($VAL & 00010){ $DEBUG and carp ($ERROR{ENLOCEX}), return }
   $VAL |= 02000;
 }
 
@@ -303,15 +303,15 @@ sub l_not {
 
 sub t_or {
   $W & 1 and $VAL |= 01000;
-  $W & 2 and $DEBUG and warn $ERROR{ENULSBG};
-  $W & 4 and $DEBUG and warn $ERROR{ENULSBO};
+  $W & 2 and $DEBUG and carp $ERROR{ENULSBG};
+  $W & 4 and $DEBUG and carp $ERROR{ENULSBO};
 }
 
 
 sub t_not {
   $W & 1 and $VAL &= ~01000;
-  $W & 2 and $DEBUG and warn $ERROR{ENULSBG};
-  $W & 4 and $DEBUG and warn $ERROR{ENULSBO};
+  $W & 2 and $DEBUG and carp $ERROR{ENULSBG};
+  $W & 4 and $DEBUG and carp $ERROR{ENULSBO};
 }
 
 
@@ -328,7 +328,7 @@ File::chmod - Implements symbolic and ls chmod modes
 
 =head1 VERSION
 
-version 0.34
+version 0.35
 
 =head1 SYNOPSIS
 
@@ -419,7 +419,7 @@ Returns a list of modified permissions, without chmodding files.
 Accepts any of the three kinds of modes.
 
   @newmodes = getchmod("+x","file1","file2");
-  # @newmodes holds the octal permissons of the files'
+  # @newmodes holds the octal permissions of the files'
   # modes, if they were to be sent through chmod("+x"...)
 
 =back
@@ -439,12 +439,12 @@ Takes an "ls" permissions mode, and chmods each file.
 =item getsymchmod(MODE,FILES)
 
 Returns a list of modified permissions, without chmodding files.
-Accepts only symbolic permisson modes.
+Accepts only symbolic permission modes.
 
 =item getlschmod(MODE,FILES)
 
 Returns a list of modified permissions, without chmodding files.
-Accepts only "ls" permisson modes.
+Accepts only "ls" permission modes.
 
 =item getmod(FILES)
 
@@ -480,144 +480,10 @@ found in $MASK.  It defaults to true.
 
 =for test_synopsis my ( @files );
 
-=head1 REVISIONS
-
-I<Note: this section was started with version 0.30.>
-
-This is an in-depth look at the changes being made from version to version.
-
-=head2 0.31 to 0.32
-
-=over 4
-
-=item B<license added>
-
-I added a license to this module so that it can be used places without asking
-my permission.  Sorry, Adam.
-
-=back
-
-=head2 0.30 to 0.31
-
-=over 4
-
-=item B<fixed getsymchmod() bug>
-
-Whoa.  getsymchmod() was doing some crazy ish.  That's about all I can say.
-I did a great deal of debugging, and fixed it up.  It ALL had to do with two
-things:
-
-  $or = (/+=/ ? 1 : 0); # should have been /[+=]/
-
-  /u/ && $ok ? u_or() : u_not(); # should have been /u/ and $ok
-
-=item B<fixed getmod() bug>
-
-I was using map() incorrectly in getmod().  Fixed that.
-
-=item B<condensed lschmod()>
-
-I shorted it up, getting rid a variable.
-
-=back
-
-=head2 0.21 to 0.30
-
-=over 4
-
-=item B<added umask() honoring for symchmod()>
-
-The symchmod() function now honors the $UMASK and $MASK variables.  $UMASK is
-a boolean which indicates whether or not to honor the $MASK variable.  $MASK
-holds a umask, and it defaults to umask().  $UMASK defaults to true.  These
-variables are NOT exported.  They must explictly set (i.e. $File::chmod::UMASK
-= 0).
-
-=item B<function name changes>
-
-Renamed internal function determine_mode() to mode().  However, if you happen
-to be using determine_mode() somewhere, mode() will be called, but you'll also
-get a warning about deprecation.
-
-Renamed internal functions {or,not}_{l,s,t} to {l,s,t}_{or,not}.  This is to
-keep in standard with the OTHER 6 pairs of bitwise functions, such as r_or()
-and g_not().  I don't know WHY the others had 'not' or 'or' in the front.
-
-=item B<fixed debugging bugs>
-
-Certain calls to warn() were not guarded by the $DEBUG variable, and now they
-are.  Also, for some reason, I left a debugging check (that didn't check to
-see if $DEBUG was true) in getsymchmod(), line 118.  It printed "ENTERING /g/".
-It's gone now.
-
-=item B<fixed set-uid and set-gid bug>
-
-Heh, it seems that in the previous version of File::chmod, the following code
-went along broken:
-
-  # or_s sub, File/chmod.pm, v0.21, line 330
-  ($VAL & 00100) && do {
-    $DEBUG && warn("execute bit must be on for set-uid"); 1;
-  } && next;
-
-Aside from me using '&&' more than enough (changed in the new code), this is
-broken.  This is now fixed.
-
-=item B<fixed file lock/set-gid bug>
-
-The not_l() function (now renamed to l_not()) used to take the file mode and
-bit-wise NOT it with ~02000.  However, it did not check if the file was locked
-vs. set-gid.  Now, the function is C<$VAL &= ~02000 if not $VAL & 00010;>.
-
-=item B<removed useless data structures>
-
-I do not know why I had the $S variable, or %r, %w, and %x hashes.  In fact,
-$S was declared in C<use vars qw( ... );>, but never given a value, and the
-%r, %w, and %x hashes had a 'full' key which never got used.  And the hashes
-themselves weren't really needed anyway.  Here is a list of the variables no
-longer in use, and what they have been replaced with (if any):
-
-  $S		nothing
-  $U, $G, $O	$W
-  %r, %w, %x	octal numbers
-  @files	@_ (I had @files = @_; in nearly EVERY sub)
-  $c		$_
-
-=item B<compacted code>
-
-The first version of File::chmod that was published was 0.13, and it was
-written in approximately 10 days, being given the off-and-on treatment I end
-up having to give several projects, due to more pressing matters.  Well, since
-then, most of the code has stayed the same, although bugs were worked out.
-Well, I got rid of a lot of slow, clunky, and redundant sections of code in
-this version.  Sections include the processing of each character of the mode
-in getsymchmod(), the getmod() subroutine, um, nearly ALL of the getsymchmod()
-function, now that I look at it.
-
-Here's part of the getsymchmod() rewrite:
-
-  for ($c){
-    if (/u/){
-      u_or() if $MODE eq "+" or $MODE eq "=";
-      u_not() if $MODE eq "-";
-    }
-  ...
-  }
-
-  # changed to
-
-  /u/ && $or ? u_or() : u_and();
-  # note: operating on $_, $c isn't used anymore
-  # note: $or holds 1 if the $MODE was + or =, 0 if $MODE was -
-  # note: previous was redundant.  didn't need $MODE eq "-" check
-  #       because u_or() and u_not() both go to the next character
-
-=back
-
 =head1 PORTING
 
 This is only good on Unix-like boxes.  I would like people to help me work on
-File::chmod for any OS that deserves it.  If you would like to help, please
+L<File::chmod> for any OS that deserves it.  If you would like to help, please
 email me (address below) with the OS and any information you might have on how
 chmod() should work on it; if you don't have any specific information, but
 would still like to help, hey, that's good too.  I have the following
@@ -670,6 +536,19 @@ w_not
 w_or
 x_not
 x_or
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+https://github.com/xenoterracide/file-chmod/issues
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
+=head1 CONTRIBUTOR
+
+David Steinbrunner <dsteinbrunner@pobox.com>
 
 =head1 AUTHORS
 
