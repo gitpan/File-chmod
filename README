@@ -2,7 +2,7 @@ NAME
     File::chmod - Implements symbolic and ls chmod modes
 
 VERSION
-    version 0.35
+    version 0.36
 
 SYNOPSIS
       use File::chmod;
@@ -74,57 +74,58 @@ DESCRIPTION
     call or determining the file's permissions, and then combining that with
     whatever bits are appropriate. It also operates separately on each file.
 
-  Functions
-    Exported by default:
+FUNCTIONS - EXPORT
+  chmod(MODE,FILES)
+    Exported by Default
 
-    chmod(MODE,FILES)
-        Takes an octal, symbolic, or "ls" mode, and then chmods each file
-        appropriately.
+    Takes an octal, symbolic, or "ls" mode, and then chmods each file
+    appropriately.
 
-    getchmod(MODE,FILES)
-        Returns a list of modified permissions, without chmodding files.
-        Accepts any of the three kinds of modes.
+  getchmod(MODE,FILES)
+    Exported by Default
 
-          @newmodes = getchmod("+x","file1","file2");
-          # @newmodes holds the octal permissions of the files'
-          # modes, if they were to be sent through chmod("+x"...)
+    Returns a list of modified permissions, without chmodding files. Accepts
+    any of the three kinds of modes.
 
-    Exported by request:
+      @newmodes = getchmod("+x","file1","file2");
+      # @newmodes holds the octal permissions of the files'
+      # modes, if they were to be sent through chmod("+x"...)
 
-    symchmod(MODE,FILES)
-        Takes a symbolic permissions mode, and chmods each file.
+FUNCTIONS - EXPORT_OK
+  symchmod(MODE,FILES)
+    Takes a symbolic permissions mode, and chmods each file.
 
-    lschmod(MODE,FILES)
-        Takes an "ls" permissions mode, and chmods each file.
+  lschmod(MODE,FILES)
+    Takes an "ls" permissions mode, and chmods each file.
 
-    getsymchmod(MODE,FILES)
-        Returns a list of modified permissions, without chmodding files.
-        Accepts only symbolic permission modes.
+  getsymchmod(MODE,FILES)
+    Returns a list of modified permissions, without chmodding files. Accepts
+    only symbolic permission modes.
 
-    getlschmod(MODE,FILES)
-        Returns a list of modified permissions, without chmodding files.
-        Accepts only "ls" permission modes.
+  getlschmod(MODE,FILES)
+    Returns a list of modified permissions, without chmodding files. Accepts
+    only "ls" permission modes.
 
-    getmod(FILES)
-        Returns a list of the current mode of each file.
+  getmod(FILES)
+    Returns a list of the current mode of each file.
 
-  Variables
-    $File::chmod::DEBUG
-        If set to a true value, it will report warnings, similar to those
-        produced by chmod() on your system. Otherwise, the functions will
-        not report errors. Example: a file can not have file-locking and the
-        set-gid bits on at the same time. If $File::chmod::DEBUG is true,
-        the function will report an error. If not, you are not warned of the
-        conflict. It is set to 1 as default.
+VARIABLES
+  $File::chmod::DEBUG
+    If set to a true value, it will report warnings, similar to those
+    produced by chmod() on your system. Otherwise, the functions will not
+    report errors. Example: a file can not have file-locking and the set-gid
+    bits on at the same time. If $File::chmod::DEBUG is true, the function
+    will report an error. If not, you are not warned of the conflict. It is
+    set to 1 as default.
 
-    $File::chmod::MASK
-        Contains the umask to apply to new file modes when using
-        getsymchmod(). This defaults to the return value of umask() at
-        compile time. Is only applied if $UMASK is true.
+  $File::chmod::MASK
+    Contains the umask to apply to new file modes when using getsymchmod().
+    This defaults to the return value of umask() at compile time. Is only
+    applied if $UMASK is true.
 
-    $File::chmod::UMASK
-        This is a boolean which tells getsymchmod() whether or not to apply
-        the umask found in $MASK. It defaults to true.
+  $File::chmod::UMASK
+    This is a boolean which tells getsymchmod() whether or not to apply the
+    umask found in $MASK. It defaults to true.
 
 PORTING
     This is only good on Unix-like boxes. I would like people to help me

@@ -1,5 +1,9 @@
 Revision history for Perl extension File-chmod.
 
+0.36      2013-09-08
+	- improve Pod using Pod::Weaver, this will allow better linking on web
+	  interfaces
+
 0.35      2013-09-08
 	- add read/write tests
 	- remove REVISIONS from pod

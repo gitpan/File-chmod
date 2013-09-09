@@ -59,7 +59,7 @@
    "provides" : {
       "File::chmod" : {
          "file" : "lib/File/chmod.pm",
-         "version" : "0.35"
+         "version" : "0.36"
       }
    },
    "release_status" : "stable",
@@ -74,7 +74,7 @@
          "web" : "https://github.com/xenoterracide/file-chmod"
       }
    },
-   "version" : "0.35",
+   "version" : "0.36",
    "x_contributors" : [
       "David Steinbrunner <dsteinbrunner@pobox.com>"
    ]
