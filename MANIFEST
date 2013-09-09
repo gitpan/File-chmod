@@ -27,4 +27,5 @@ t/release-portability.t
 t/release-synopsis.t
 t/release-test-version.t
 t/release-unused-vars.t
+t/sticky-bit.t
 t/write.t

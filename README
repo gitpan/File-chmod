@@ -2,7 +2,7 @@ NAME
     File::chmod - Implements symbolic and ls chmod modes
 
 VERSION
-    version 0.36
+    version 0.37
 
 SYNOPSIS
       use File::chmod;
@@ -76,14 +76,10 @@ DESCRIPTION
 
 FUNCTIONS - EXPORT
   chmod(MODE,FILES)
-    Exported by Default
-
     Takes an octal, symbolic, or "ls" mode, and then chmods each file
     appropriately.
 
   getchmod(MODE,FILES)
-    Exported by Default
-
     Returns a list of modified permissions, without chmodding files. Accepts
     any of the three kinds of modes.
 
@@ -161,8 +157,10 @@ BUGS
     When submitting a bug or request, please include a test-file or a patch
     to an existing test-file that illustrates the bug or desired feature.
 
-CONTRIBUTOR
-    David Steinbrunner <dsteinbrunner@pobox.com>
+CONTRIBUTORS
+    *   David Steinbrunner <dsteinbrunner@pobox.com>
+
+    *   Tim <oylenshpeegul@gmail.com>
 
 AUTHORS
     *   Jeff Pinyan <japhy.734+CPAN@gmail.com>

@@ -6,7 +6,7 @@ use vars qw( $VAL $W $MODE );
 
 use base 'Exporter';
 
-our $VERSION = '0.36'; # VERSION
+our $VERSION = '0.37'; # VERSION
 
 our @EXPORT    = (qw( chmod getchmod )); ## no critic ( ProhibitAutomaticExportation )
 our @EXPORT_OK = (qw( symchmod lschmod getsymchmod getlschmod getmod ));
@@ -27,7 +27,7 @@ my %ERROR = (
   ENEXGID => "execute bit must be on for set-gid",
   ENULSID => "set-id has no effect for 'others'",
   ENULSBG => "sticky bit has no effect for 'group'",
-  ENULSBO => "sticky bit has no effect for 'others'",
+  ENULSBU => "sticky bit has no effect for 'user'",
 );
 
 sub getmod {
@@ -302,16 +302,16 @@ sub l_not {
 
 
 sub t_or {
-  $W & 1 and $VAL |= 01000;
+  $W & 1 and $DEBUG and carp $ERROR{ENULSBU};
   $W & 2 and $DEBUG and carp $ERROR{ENULSBG};
-  $W & 4 and $DEBUG and carp $ERROR{ENULSBO};
+  $W & 4 and $VAL |= 01000;
 }
 
 
 sub t_not {
-  $W & 1 and $VAL &= ~01000;
+  $W & 1 and $DEBUG and carp $ERROR{ENULSBU};
   $W & 2 and $DEBUG and carp $ERROR{ENULSBG};
-  $W & 4 and $DEBUG and carp $ERROR{ENULSBO};
+  $W & 4 and $VAL &= ~01000;
 }
 
 
@@ -328,7 +328,7 @@ File::chmod - Implements symbolic and ls chmod modes
 
 =head1 VERSION
 
-version 0.36
+version 0.37
 
 =head1 SYNOPSIS
 
@@ -406,14 +406,10 @@ bits are appropriate.  It also operates separately on each file.
 
 =head2 chmod(MODE,FILES)
 
-Exported by Default
-
 Takes an octal, symbolic, or "ls" mode, and then chmods each file
 appropriately.
 
 =head2 getchmod(MODE,FILES)
-
-Exported by Default
 
 Returns a list of modified permissions, without chmodding files.
 Accepts any of the three kinds of modes.
@@ -536,9 +532,19 @@ When submitting a bug or request, please include a test-file or a
 patch to an existing test-file that illustrates the bug or desired
 feature.
 
-=head1 CONTRIBUTOR
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item *
 
 David Steinbrunner <dsteinbrunner@pobox.com>
+
+=item *
+
+Tim <oylenshpeegul@gmail.com>
+
+=back
 
 =head1 AUTHORS
 

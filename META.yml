@@ -24,7 +24,7 @@ no_index:
 provides:
   File::chmod:
     file: lib/File/chmod.pm
-    version: 0.36
+    version: 0.37
 requires:
   Carp: 0
   Exporter: 0
@@ -36,6 +36,7 @@ resources:
   bugtracker: https://github.com/xenoterracide/file-chmod/issues
   homepage: https://metacpan.org/dist/File-chmod
   repository: git://github.com/xenoterracide/file-chmod.git
-version: 0.36
+version: 0.37
 x_contributors:
   - 'David Steinbrunner <dsteinbrunner@pobox.com>'
+  - 'Tim <oylenshpeegul@gmail.com>'
