@@ -2,7 +2,7 @@ NAME
     File::chmod - Implements symbolic and ls chmod modes
 
 VERSION
-    version 0.38
+    version 0.39
 
 SYNOPSIS
       use File::chmod;

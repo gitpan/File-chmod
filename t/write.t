@@ -10,16 +10,14 @@ plan skip_all => "Windows perms work differently" if $OSNAME eq 'MSWin32';
 
 my $tmp = File::Temp->new;
 my $fn  = $tmp->filename;
-note sprintf "original state of %s: %o\n", $fn, getmod( $fn );
+
+chmod( 0000, $fn );
+note sprintf "state of %s: %o\n", $fn, getmod( $fn );
 
 ok chmod("+w", $fn ), "chmod +w $fn";
-ok -w $fn, "$fn writable";
+is sprintf( '%o', getmod( $fn ) ), 222, "$fn is 222";
 
 ok chmod("-w", $fn ), "chmod -w $fn";
-ok ! -w $fn, "$fn not writable";
-
-# test a second time because there's a good chance it was the first
-ok chmod("+w", $fn ), "chmod +w $fn";
-ok -w $fn, "$fn writable";
+is sprintf( '%o', getmod( $fn ) ), 000, "$fn is 000";
 
 done_testing;
