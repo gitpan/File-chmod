@@ -5,14 +5,17 @@ author:
   - 'Caleb Cushing <xenoterracide@gmail.com>'
 build_requires:
   English: 0
+  File::Spec: 0
   File::Temp: 0
   IO::Handle: 0
   IPC::Open3: 0
   Test::More: 0.88
+  autodie: 0
+  utf8: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300038, CPAN::Meta::Converter version 2.132510'
+generated_by: 'Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.132830'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -24,7 +27,7 @@ no_index:
 provides:
   File::chmod:
     file: lib/File/chmod.pm
-    version: 0.39
+    version: 0.40
 requires:
   Carp: 0
   Exporter: 0
@@ -36,8 +39,9 @@ resources:
   bugtracker: https://github.com/xenoterracide/file-chmod/issues
   homepage: https://metacpan.org/dist/File-chmod
   repository: git://github.com/xenoterracide/file-chmod.git
-version: 0.39
+version: 0.40
 x_contributors:
   - 'David Steinbrunner <dsteinbrunner@pobox.com>'
   - 'Slaven Rezic <slaven@rezic.de>'
+  - 'Steve Throckmorton <arrestee@gmail.com>'
   - 'Tim <oylenshpeegul@gmail.com>'

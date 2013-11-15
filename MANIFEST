@@ -1,3 +1,4 @@
+CONTRIBUTING
 Changes
 LICENSE
 MANIFEST
@@ -13,6 +14,7 @@ t/author-critic.t
 t/author-pod-spell.t
 t/author-test-eol.t
 t/executable.t
+t/load_chmod.t
 t/read.t
 t/release-cpan-changes.t
 t/release-dist-manifest.t

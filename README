@@ -2,16 +2,11 @@ NAME
     File::chmod - Implements symbolic and ls chmod modes
 
 VERSION
-    version 0.39
+    version 0.40
 
 SYNOPSIS
       use File::chmod;
-      # It is recommended that you explicitly set $UMASK as the default may change
-      # in the future, 0 is recommended to behave like system chmod, set to 1 if
-      # you want it enabled, so that if later we decide to disable it by default
-      # it won't change your code. $UMASK has been changed to be true by using
-      # numeric value 2 internally
-      $File::chmod::UMASK = 0;
+      $File::chmod::UMASK = 0; # you may want this, it ignores the systems umask setting
 
       # chmod takes all three types
       # these all do the same thing
@@ -40,9 +35,9 @@ DESCRIPTION
     An added feature to version 0.30 is the $UMASK variable, explained in
     detail below; if "symchmod()" is called and this variable is true, then
     the function uses the (also new) $MASK variable (which defaults to
-    "umask()") as a mask against the new mode. This mode is one by default,
+    "umask()") as a mask against the new mode. This mode is on by default,
     and changes the behavior from what you would expect if you are used to
-    UNIX "chmod". This may change in the future.
+    UNIX "chmod".
 
     Symbolic modes are thoroughly described in your chmod(1) man page, but
     here are a few examples.
@@ -161,6 +156,8 @@ CONTRIBUTORS
     *   David Steinbrunner <dsteinbrunner@pobox.com>
 
     *   Slaven Rezic <slaven@rezic.de>
+
+    *   Steve Throckmorton <arrestee@gmail.com>
 
     *   Tim <oylenshpeegul@gmail.com>
 

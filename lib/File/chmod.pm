@@ -6,7 +6,7 @@ use vars qw( $VAL $W $MODE );
 
 use base 'Exporter';
 
-our $VERSION = '0.39'; # VERSION
+our $VERSION = '0.40'; # VERSION
 
 our @EXPORT    = (qw( chmod getchmod )); ## no critic ( ProhibitAutomaticExportation )
 our @EXPORT_OK = (qw( symchmod lschmod getsymchmod getlschmod getmod ));
@@ -36,7 +36,7 @@ sub getmod {
 }
 
 
-sub chmod { ## no critic ( Subroutines::ProhibitBuiltinHomonyms )
+sub chmod (@) { ## no critic ( Subroutines::ProhibitBuiltinHomonyms Subroutines::ProhibitSubroutinePrototypes )
   my $mode = shift;
   my $how = mode($mode);
 
@@ -58,13 +58,6 @@ sub getchmod {
 
 sub symchmod {
   my $mode = shift;
-
-#  warnings::warnif 'deprecated', '$UMASK being true is deprecated'
-#    . ' it will be false by default in the future. This change'
-#    . ' is being made because this not the behavior of the unix command'
-#    . ' `chmod`. This warning can be disabled by putting explicitly'
-#    . ' setting $File::chmod::UMASK to false or any non 2 true value'
-#    if $UMASK == 2;
 
   my @return = getsymchmod($mode,@_);
   my $ret = 0;
@@ -328,17 +321,12 @@ File::chmod - Implements symbolic and ls chmod modes
 
 =head1 VERSION
 
-version 0.39
+version 0.40
 
 =head1 SYNOPSIS
 
   use File::chmod;
-  # It is recommended that you explicitly set $UMASK as the default may change
-  # in the future, 0 is recommended to behave like system chmod, set to 1 if
-  # you want it enabled, so that if later we decide to disable it by default
-  # it won't change your code. $UMASK has been changed to be true by using
-  # numeric value 2 internally
-  $File::chmod::UMASK = 0;
+  $File::chmod::UMASK = 0; # you may want this, it ignores the systems umask setting
 
   # chmod takes all three types
   # these all do the same thing
@@ -368,9 +356,8 @@ mode and an "ls" mode.
 An added feature to version 0.30 is the C<$UMASK> variable, explained in
 detail below; if C<symchmod()> is called and this variable is true, then the
 function uses the (also new) C<$MASK> variable (which defaults to C<umask()>)
-as a mask against the new mode. This mode is one by default, and changes the
+as a mask against the new mode. This mode is on by default, and changes the
 behavior from what you would expect if you are used to UNIX C<chmod>.
-B<This may change in the future.>
 
 Symbolic modes are thoroughly described in your chmod(1) man page, but
 here are a few examples.
@@ -543,6 +530,10 @@ David Steinbrunner <dsteinbrunner@pobox.com>
 =item *
 
 Slaven Rezic <slaven@rezic.de>
+
+=item *
+
+Steve Throckmorton <arrestee@gmail.com>
 
 =item *
 
